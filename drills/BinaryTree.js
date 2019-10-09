@@ -1,111 +1,93 @@
 class BinarySearchTree {
-  constructor (key = null, value = null, parent = null) {
+  constructor(key = null, value = null, parent = null) {
     this.key = key;
     this.value = value;
     this.parent = parent;
     this.left = null;
     this.right = null;
   }
-  
-  insert (key, value) {
+
+  insert(key, value) {
     if (this.key === null) {
       this.key = key;
       this.value = value;
-    }
-    else if (key < this.key) {
+    } else if (key < this.key) {
       // go left
       if (this.left === null) {
-        this.left = new BinarySearchTree (key, value, this);
-      }
-      else {
+        this.left = new BinarySearchTree(key, value, this);
+      } else {
         this.left.insert(key, value);
       }
-    }
-    else {
+    } else {
       //go right
       if (this.right === null) {
-        this.right = new BinarySearchTree (key, value, this);
-      }
-      else {
+        this.right = new BinarySearchTree(key, value, this);
+      } else {
         this.right.insert(key, value);
       }
     }
   }
-  
 
-  find (key) {
+  find(key) {
     if (this.key === key) {
       return this.value;
-    }
-    else if (key < this.key && this.left) {
+    } else if (key < this.key && this.left) {
       return this.left.find(key);
-    }
-    else if (key > this.key && this.right) {
+    } else if (key > this.key && this.right) {
       return this.right.find(key);
-    }
-    else {
-      throw new Error('Key Error');
+    } else {
+      throw new Error("Key Error");
     }
   }
-  
-  remove (key) {
+
+  remove(key) {
     if (this.key === key) {
       if (this.left && this.right) {
         const successor = this.right._findMin();
         this.key = successor.key;
         this.value = successor.value;
         successor.remove(successor.key);
-      }
-      else if (this.left) {
+      } else if (this.left) {
         this._replaceWith(this.left);
-      }
-      else if (this.right) {
+      } else if (this.right) {
         this._replaceWith(this.right);
-      }
-      else {
+      } else {
         this._replaceWith(null);
       }
-    }
-    else if (key < this.key && this.left) {
+    } else if (key < this.key && this.left) {
       this.left.remove(key);
-    }
-    else if (key > this.key && this.right) {
+    } else if (key > this.key && this.right) {
       this.right.remove(key);
-    }
-    else {
-      throw new Error('Key Error');
+    } else {
+      throw new Error("Key Error");
     }
   }
 
-  _findMin () {
+  _findMin() {
     if (!this.left) {
       return this;
-    }
-    else {
+    } else {
       return this.left._findMin();
     }
   }
 
-  _replaceWith (node) {
+  _replaceWith(node) {
     if (this.parent) {
       if (this === this.parent.left) {
         this.parent.left = node;
-      }
-      else if (this === this.parent.right) {
+      } else if (this === this.parent.right) {
         this.parent.right = node;
       }
       if (node) {
         node.parent = this.parent;
       }
-    }
-    else {
+    } else {
       if (node) {
         this.key = node.key;
         this.value = node.value;
         this.left = node.left;
         this.right = node.right;
-      }
-      else {
+      } else {
         this.key = null;
         this.value = null;
         this.left = null;
@@ -114,7 +96,7 @@ class BinarySearchTree {
     }
   }
 
-  inOrder(){
+  inOrder() {
     if (this.left) {
       this.left.inOrder();
     }
@@ -123,8 +105,8 @@ class BinarySearchTree {
       this.right.inOrder();
     }
   }
-  
-  postOrder(){
+
+  postOrder() {
     if (this.left) {
       this.left.postOrder();
     }
@@ -134,13 +116,25 @@ class BinarySearchTree {
     console.log(this.key);
   }
 
-  preOrder(){
+  preOrder() {
     console.log(this.key);
-    if (this.left){
+    if (this.left) {
       this.left.preOrder();
     }
-    if (this.right){
+    if (this.right) {
       this.right.preOrder();
+    }
+  }
+
+  bfs(q) {
+    let node = this;
+    console.log(this.key);
+    while (node !== null) {
+      if (node.left) q.enqueue(node.left);
+      if (node.right) q.enqueue(node.right);
+      node = q.dequeue();
+      if (node !== null)
+        console.log(node.key);
     }
   }
 }
